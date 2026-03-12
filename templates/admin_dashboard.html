@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — ResultPro{% endblock %}
+
+{% block content %}
+
+<div class="card border-0 rounded-4 shadow-sm mb-4"
+     style="background: linear-gradient(135deg,#dc3545,#fd7e14);">
+  <div class="card-body p-4 text-white d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+      <h4 class="fw-bold mb-1"><i class="bi bi-shield-fill me-2"></i>Admin Dashboard</h4>
+      <p class="mb-0 opacity-75">Manage students and their results</p>
+    </div>
+    <a href="{{ url_for('add_student') }}" class="btn btn-light text-danger fw-semibold">
+      <i class="bi bi-person-plus me-1"></i>Add Student
+    </a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-4">
+      <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex align-items-center justify-content-center mx-auto mb-3"
+           style="width:56px;height:56px;">
+        <i class="bi bi-people-fill text-danger fs-4"></i>
+      </div>
+      <h3 class="fw-bold text-danger mb-0">{{ total_students }}</h3>
+      <small class="text-muted">Total Students</small>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-4">
+      <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mx-auto mb-3"
+           style="width:56px;height:56px;">
+        <i class="bi bi-file-earmark-text-fill text-success fs-4"></i>
+      </div>
+      <h3 class="fw-bold text-success mb-0">{{ total_results }}</h3>
+      <small class="text-muted">Total Results</small>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-4">
+      <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mx-auto mb-3"
+           style="width:56px;height:56px;">
+        <i class="bi bi-shield-check-fill text-primary fs-4"></i>
+      </div>
+      <h3 class="fw-bold text-primary mb-0">Admin</h3>
+      <small class="text-muted">Your Role</small>
+    </div>
+  </div>
+  <div class="col-sm-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-4">
+      <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex align-items-center justify-content-center mx-auto mb-3"
+           style="width:56px;height:56px;">
+        <i class="bi bi-database-fill text-warning fs-4"></i>
+      </div>
+      <h3 class="fw-bold text-warning mb-0">SQLite</h3>
+      <small class="text-muted">Database</small>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 rounded-4 shadow-sm">
+  <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+    <h6 class="fw-bold mb-0">
+      <i class="bi bi-people-fill text-danger me-2"></i>All Students
+    </h6>
+    <input type="text" class="form-control form-control-sm w-auto"
+           id="searchInput" placeholder="🔍 Search student..."/>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0" id="studentsTable">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">#</th>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Email</th>
+            <th>Joined</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td class="ps-4 text-muted">{{ loop.index }}</td>
+            <td><span class="badge bg-danger rounded-pill">{{ student['roll_no'] }}</span></td>
+            <td class="fw-semibold">{{ student['name'] }}</td>
+            <td>{{ student['class'] }}</td>
+            <td class="text-muted small">{{ student['email'] }}</td>
+            <td class="text-muted small">{{ student['created'][:10] }}</td>
+            <td class="text-center">
+              <a href="{{ url_for('view_student', student_id=student['id']) }}"
+                 class="btn btn-sm btn-outline-primary rounded-pill me-1">
+                <i class="bi bi-eye"></i> View
+              </a>
+              <a href="{{ url_for('add_result', student_id=student['id']) }}"
+                 class="btn btn-sm btn-outline-success rounded-pill me-1">
+                <i class="bi bi-plus"></i> Result
+              </a>
+              <a href="{{ url_for('delete_student', student_id=student['id']) }}"
+                 class="btn btn-sm btn-outline-danger rounded-pill"
+                 onclick="return confirm('Delete this student?')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-5">
+              <i class="bi bi-people fs-1 d-block mb-2"></i>
+              No students yet.
+              <a href="{{ url_for('add_student') }}">Add one!</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

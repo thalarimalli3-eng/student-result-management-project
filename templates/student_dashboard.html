@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard — ResultPro{% endblock %}
+
+{% block content %}
+
+<!-- Welcome Banner -->
+<div class="card border-0 rounded-4 shadow-sm mb-4"
+     style="background: linear-gradient(135deg,#0d6efd,#6610f2);">
+  <div class="card-body p-4 text-white d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+      <h4 class="fw-bold mb-1">
+        <i class="bi bi-person-circle me-2"></i>Hello, {{ student['name'] }}!
+      </h4>
+      <p class="mb-0 opacity-75">
+        Roll No: <strong>{{ student['roll_no'] }}</strong>
+        &nbsp;|&nbsp; {{ student['class'] }}
+      </p>
+    </div>
+    <a href="{{ url_for('student_result') }}"
+       class="btn btn-light text-primary fw-semibold">
+      <i class="bi bi-file-earmark-text me-1"></i>View Full Result
+    </a>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-3">
+      <div class="fw-bold fs-3 text-primary">{{ results|length }}</div>
+      <small class="text-muted">Subjects</small>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-3">
+      <div class="fw-bold fs-3 text-success">{{ stats.total }}</div>
+      <small class="text-muted">Total Marks</small>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-3">
+      <div class="fw-bold fs-3 text-warning">{{ stats.percentage }}%</div>
+      <small class="text-muted">Percentage</small>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card border-0 rounded-4 shadow-sm text-center p-3">
+      <div class="fw-bold fs-3
+        {% if stats.passed %}text-success{% else %}text-danger{% endif %}">
+        {{ stats.grade }}
+      </div>
+      <small class="text-muted">Grade</small>
+    </div>
+  </div>
+</div>
+
+<!-- Subject wise Progress -->
+{% if results %}
+<div class="card border-0 rounded-4 shadow-sm">
+  <div class="card-header bg-transparent border-0 pt-4 px-4
+              d-flex justify-content-between align-items-center">
+    <h6 class="fw-bold mb-0">
+      <i class="bi bi-list-check text-primary me-2"></i>Subject-wise Performance
+    </h6>
+    <a href="{{ url_for('student_result') }}"
+       class="btn btn-sm btn-outline-primary rounded-pill">
+      <i class="bi bi-printer me-1"></i>Print
+    </a>
+  </div>
+  <div class="card-body px-4 pb-4">
+    {% for r in results %}
+    {% set pct = ((r['marks'] / r['max_marks']) * 100)|round(1) %}
+    <div class="mb-3">
+      <div class="d-flex justify-content-between mb-1">
+        <span class="fw-semibold">{{ r['subject'] }}</span>
+        <span class="text-muted small">
+          {{ r['marks'] }}/{{ r['max_marks'] }} ({{ pct }}%)
+        </span>
+      </div>
+      <div class="progress rounded-pill" style="height:10px;">
+        <div class="progress-bar rounded-pill
+          {% if pct >= 75 %}bg-success
+          {% elif pct >= 50 %}bg-warning
+          {% else %}bg-danger{% endif %}"
+          style="width:{{ pct }}%">
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Pass / Fail -->
+    <div class="text
+    

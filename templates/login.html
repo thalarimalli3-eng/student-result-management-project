@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Login — ResultPro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-md-5 col-lg-4">
+
+    <div class="text-center mb-4">
+      <i class="bi bi-mortarboard-fill text-primary" style="font-size:3.5rem;"></i>
+      <h3 class="fw-bold mt-2">ResultPro</h3>
+      <p class="text-muted">Student Result Management System</p>
+    </div>
+
+    <div class="card border-0 shadow-lg rounded-4">
+      <div class="card-body p-4 p-md-5">
+        <h5 class="fw-bold mb-4 text-center">Sign In</h5>
+
+        <form method="POST">
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Login As</label>
+            <div class="d-flex gap-2">
+              <input type="radio" class="btn-check" name="role" id="adminRole" value="admin" checked/>
+              <label class="btn btn-outline-danger w-50" for="adminRole">
+                <i class="bi bi-shield-fill me-1"></i>Admin
+              </label>
+              <input type="radio" class="btn-check" name="role" id="studentRole" value="student"/>
+              <label class="btn btn-outline-primary w-50" for="studentRole">
+                <i class="bi bi-person-fill me-1"></i>Student
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold" id="usernameLabel">
+              <i class="bi bi-person me-1 text-danger"></i>Username
+            </label>
+            <input type="text" id="username" name="username"
+              class="form-control form-control-lg rounded-3"
+              placeholder="Enter username / Roll No" required autofocus/>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">
+              <i class="bi bi-lock me-1 text-danger"></i>Password
+            </label>
+            <div class="input-group">
+              <input type="password" id="password" name="password"
+                class="form-control form-control-lg rounded-start-3"
+                placeholder="Enter password" required/>
+              <button class="btn btn-outline-secondary" type="button" id="togglePwd">
+                <i class="bi bi-eye" id="eyeIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg rounded-3 fw-semibold">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Login
+            </button>
+          </div>
+        </form>
+
+        <hr class="my-4"/>
+
+        <div class="bg-light rounded-3 p-3">
+          <p class="fw-bold mb-2 small">
+            <i class="bi bi-info-circle-fill text-primary me-1"></i>Demo Credentials:
+          </p>
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="bg-danger bg-opacity-10 rounded-3 p-2 text-center">
+                <small class="d-block text-danger fw-bold">Admin</small>
+                <small class="text-muted">admin / admin123</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="bg-primary bg-opacity-10 rounded-3 p-2 text-center">
+                <small class="d-block text-primary fw-bold">Student</small>
+                <small class="text-muted">STU001 / student123</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

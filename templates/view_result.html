@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Result Card — ResultPro{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div class="d-flex align-items-center">
+    {% if role == 'admin' %}
+      <a href="{{ url_for('admin_dashboard') }}"
+         class="btn btn-outline-secondary btn-sm me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+    {% else %}
+      <a href="{{ url_for('student_dashboard') }}"
+         class="btn btn-outline-secondary btn-sm me-3">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+    {% endif %}
+    <h5 class="fw-bold mb-0">
+      <i class="bi bi-file-earmark-text-fill text-primary me-2"></i>Result Card
+    </h5>
+  </div>
+  <div class="no-print">
+    {% if role == 'admin' %}
+      <a href="{{ url_for('add_result', student_id=student['id']) }}"
+         class="btn btn-success btn-sm rounded-pill me-2">
+        <i class="bi bi-plus me-1"></i>Add Subject
+      </a>
+    {% endif %}
+    <button onclick="window.print()"
+            class="btn btn-primary btn-sm rounded-pill">
+      <i class="bi bi-printer me-1"></i>Print Result
+    </button>
+  </div>
+</div>
+
+<!-- Result Card -->
+<div class="card border-0 shadow-sm rounded-4" id="printArea">
+
+  <!-- Header -->
+  <div class="card-header border-0 text-white text-center py-4 rounded-top-4"
+       style="background: linear-gradient(135deg,#0d6efd,#0dcaf0);">
+    <i class="bi bi-mortarboard-fill fs-2 mb-2 d-block"></i>
+    <h4 class="fw-bold mb-1">ResultPro School</h4>
+    <p class="mb-0 opacity-75 small">Official Result Card</p>
+  </div>
+
+  <div class="card-body p-4">
+
+    <!-- Student Info -->
+    <div class="row g-3 mb-4 p-3 bg-light rounded-3">
+      <div class="col-sm-6 col-lg-3">
+        <small class="text-muted d-block">Student Name</small>
+        <strong>{{ student['name'] }}</strong>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <small class="text-muted d-block">Roll Number</small>
+        <strong>{{ student['roll_no'] }}</strong>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <small class="text-muted d-block">Class</small>
+        <strong>{{ student['class'] }}</strong>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <small class="text-muted d-block">Email</small>
+        <strong class="small">{{ student['email'] }}</strong>
+      </div>
+    </div>
+
+    <!-- Results Table -->
+    {% if results %}
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered rounded-3 overflow-hidden">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>#</th>
+            <th>Subject</th>
+            <th>Exam Type</th>
+            <th>Marks</th>
+            <th>Max</th>
+            <th>%</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+          {% set pct = ((r['marks'] / r['max_marks']) * 100)|round(1) %}
+          <tr class="text-center">
+            <td class="text-muted">{{ loop.index }}</td>
+            <td class="text-start fw-semibold">{{ r['subject'] }}</td>
+            <td>
+              <span class="badge bg-secondary rounded-pill">
+                {{ r['exam_type'] }}
+              </span>
+            </td>
+            <td class="fw-bold
+              {% if pct >= 75 %}text-success
+              {% elif pct >= 50 %}text-warning
+              {% else %}text-danger{% endif %}">
+              {{ r['marks'] }}
+            </td>
+            <td class="text-muted">{{ r['max_marks'] }}</td>
+            <td>{{ pct }}%</td>
+            <td>
+              {% if pct >= 90 %}
+                <span class="badge bg-success">A+</span>
+              {% elif pct >= 80 %}
+                <span class="badge bg-primary">A</span>
+              {% elif pct >= 70 %}
+                <span class="badge bg-info text-dark">B+</span>
+              {% elif pct >= 60 %}
+                <span class="badge bg-warning text-dark">B</span>
+              {% elif pct >= 50 %}
+                <span class="badge bg-secondary">C</span>
+              {% elif pct >= 35 %}
+                <span class="badge bg-secondary">D</span>
+              {% else %}
+                <span class="badge bg-danger">F</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Summary -->
+    <div class="row g-3">
+      <div class="col-md-8">
+        <div class="row g-2">
+          <div class="col-6 col-sm-3">
+            <div class="text-center p-3 bg-light rounded-3">
+              <div class="fw-bold fs-5">{{ stats.total }}</div>
+              <small class="text-muted">Total Marks</small>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="text-center p-3 bg-light rounded-3">
+              <div class="fw-bold fs-5">{{ stats.max_total }}</div>
+              <small class="text-muted">Out of</small>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="text-center p-3 bg-primary bg-opacity-10 rounded-3">
+              <div class="fw-bold fs-5 text-primary">
+                {{ stats.percentage }}%
+              </div>
+              <small class="text-muted">Percentage</small>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="text-center p-3 bg-success bg-opacity-10 rounded-3">
+              <div class="fw-bold fs-5 text-success">{{ stats.grade }}</div>
+              <small class="text-muted">Final Grade</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="h-100 d-flex align-items-center justify-content-center
+                    rounded-3 p-3
+          {% if stats.passed %}bg-success bg-opacity-10
+          {% else %}bg-danger bg-opacity-10{% endif %}">
+          <div class="text-center">
+            {% if stats.passed %}
+              <i class="bi bi-patch-check-fill text-success fs-1 d-block mb-1"></i>
+              <div class="fw-bold text-success fs-5">PASSED ✅</div>
+            {% else %}
+              <i class="bi bi-x-circle-fill text-danger fs-1 d-block mb-1"></i>
+              <div class="fw-bold text-danger fs-5">FAILED ❌</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-file-earmark-x fs-1 d-block mb-2"></i>
+      No results added yet.
+      {% if role == 'admin' %}
+        <a href="{{ url_for('add_result', student_id=student['id']) }}">
+          Add results now
+        </a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
